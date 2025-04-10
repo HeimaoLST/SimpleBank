@@ -66,7 +66,32 @@ func (store *Store) TransferTX(ctx context.Context, arg TransferTxParams) (Trans
 		if err != nil {
 			return err
 		}
+		result.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.FromAccountID,
+			Amount:    -arg.Amount,
+		})
+		if err != nil {
 
+			return nil
+		}
+		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
+			AccountID: arg.ToAccountID,
+			Amount:    arg.Amount,
+		})
+		if err != nil {
+			return nil
+		}
+
+		// TODO: update account balances
+
+		// result.FromAccount, err = q.GetAccount(ctx, arg.FromAccountID)
+		// if err != nil {
+		// 	return nil
+		// }
+		// result.ToAccount, err = q.GetAccount(ctx, arg.ToAccountID)
+		// if err != nil {
+		// 	return nil
+		// }
 		return nil
 
 	})
