@@ -17,7 +17,7 @@ type Account struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type Entire struct {
+type Entry struct {
 	ID        int64 `json:"id"`
 	AccountID int64 `json:"account_id"`
 	// can be positive or negative
