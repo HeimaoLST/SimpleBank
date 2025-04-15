@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("cannot connect to db: ", err)
 	}
-	testQueries = New(tews)
+	testQueries = New(testDB)
 
 	os.Exit(m.Run())
 }

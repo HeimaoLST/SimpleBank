@@ -25,7 +25,7 @@ type TransferTxResult struct {
 	ToEntry     Entry    `json:"to_entry"`
 }
 
-func newStore(db *sql.DB) *Store {
+func NewStore(db *sql.DB) *Store {
 	return &Store{
 		db:      db,
 		Queries: New(db),
@@ -72,26 +72,46 @@ func (store *Store) TransferTX(ctx context.Context, arg TransferTxParams) (Trans
 		})
 		if err != nil {
 
-			return nil
+			return err
 		}
 		result.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.ToAccountID,
 			Amount:    arg.Amount,
 		})
 		if err != nil {
-			return nil
+			return err
 		}
 
 		// TODO: update account balances
 
-		// result.FromAccount, err = q.GetAccount(ctx, arg.FromAccountID)
-		// if err != nil {
-		// 	return nil
-		// }
-		// result.ToAccount, err = q.GetAccount(ctx, arg.ToAccountID)
-		// if err != nil {
-		// 	return nil
-		// }
+		account1, err := q.GetAccount(ctx, arg.FromAccountID)
+		if err != nil {
+			return err
+		}
+
+		result.FromAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+			ID:      arg.FromAccountID,
+			Balance: account1.Balance - arg.Amount,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		account2, err := q.GetAccount(ctx, arg.ToAccountID)
+		if err != nil {
+			return err
+		}
+
+		result.ToAccount, err = q.UpdateAccount(ctx, UpdateAccountParams{
+			ID:      arg.ToAccountID,
+			Balance: account2.Balance + arg.Amount,
+		})
+
+		if err != nil {
+			return err
+		}
+
 		return nil
 
 	})
