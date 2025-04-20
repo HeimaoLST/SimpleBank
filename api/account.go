@@ -112,20 +112,16 @@ func (server *Server) deleteAccount(ctx *gin.Context) {
 
 }
 
-type updateAccountRequest struct {
-	ID       int64  `uri:"id" binding:"required,min=1"`
+type updateAccountInfoRequest struct {
+	ID       int64  `json:"id" binding:"required,min=1"`
 	Owner    string `json:"owner" binding:"required"`
 	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
 }
 
-func (server *Server) updateAccount(ctx *gin.Context) {
+func (server *Server) updateAccountInfo(ctx *gin.Context) {
 
-	var req updateAccountRequest
+	var req updateAccountInfoRequest
 
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errResponse(err))
-		return
-	}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errResponse(err))
 		return
