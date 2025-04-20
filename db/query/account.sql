@@ -31,6 +31,12 @@ SET balance = $2
 WHERE id = $1
 RETURNING *;
 
+-- name: UpdateAccountInfo :one
+UPDATE accounts 
+SET owner = sqlc.arg(owner),currency = sqlc.arg(currency)
+WHERE id = sqlc.arg(id)
+RETURNING *;
+
 -- name: AddAccountBalance :one
 UPDATE accounts 
 SET balance = balance + sqlc.arg(amount)
