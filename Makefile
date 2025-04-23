@@ -12,8 +12,10 @@ sqlc:
 	docker run --rm -v "$(CURDIR):/src" -w /src sqlc/sqlc generate
 test:
 	go test -v -cover ./...	
+mock:
+	mockgen -destination db/mock/store.go -package mockdb  github/heimaolst/simplebank/db/sqlc Store	
 server:
 	go run main.go
 
 
-.PHONY: createdb dropdb	postgres migrateup migratedown sqlc test server
+.PHONY: createdb dropdb	postgres migrateup migratedown sqlc test server mock
